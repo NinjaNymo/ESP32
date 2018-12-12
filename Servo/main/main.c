@@ -9,8 +9,8 @@
 
 /*  Put in servo.h  */
 #define PW_BUF  50 // A buffer at max and end to avoid breaking servo
-#define PW_MIN  900  // Min pulse width [us]
-#define PW_MAX  1800  // Max pulse width [us]
+#define PW_MIN  500  // Min pulse width [us]
+#define PW_MAX  2300  // Max pulse width [us]
 #define DEG_MIN    0 // Min servo position [degree]
 #define DEG_MAX   90 // Max servo position [degree]
 #define SERVO_PIN 18
@@ -30,8 +30,8 @@
  * @return
  *     - Requiested position as pulsewidth [us]
  */
-uint16_t deg_to_pw(uint8_t deg){
-    return (PW_MIN + ((PW_MAX - PW_MIN) * (deg/DEG_MAX)));
+uint32_t deg_to_pw(uint8_t deg){
+    return (PW_MIN + (((PW_MAX - PW_MIN) * deg)/DEG_MAX));
 }
 
 static void servo_init(void* arg){
@@ -46,15 +46,45 @@ static void servo_init(void* arg){
     
     mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwmConfig);
 
-    uint8_t count;
+    uint32_t deg, pw, i;
     while(true){
-        for(count = DEG_MAX; count > DEG_MIN; count--){
-            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, deg_to_pw(count));
-            vTaskDelay(1000);
+        while(true){
+            while(true){
+                mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, PW_MIN);
+                printf("%d\n",PW_MIN);
+                vTaskDelay(1000);
+                mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, PW_MAX);
+                printf("%d\n",PW_MAX);
+                vTaskDelay(1000);
+
+            }
+
+            for(i = 400; i < 2000; i+=100){
+                mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, i);
+                printf("%d\n", i);
+                vTaskDelay(500);
+            }
+            for(; i > 200; i-=100){
+                mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, i);
+                printf("%d\n", i);
+                vTaskDelay(500);
+            }
         }
-        for(count = 0; count < DEG_MAX; count ++){
-            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, deg_to_pw(count));
-            vTaskDelay(1000);
+
+
+
+
+        for(deg = DEG_MAX; deg > DEG_MIN; deg--){
+            pw = deg_to_pw(deg);
+            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, pw);
+            printf("deg = %d [degree], pw = %d[ms]\n", deg, pw);
+            vTaskDelay(500);
+        }
+        for(deg = 0; deg < DEG_MAX; deg ++){
+            pw = deg_to_pw(deg);
+            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, pw);
+            printf("deg = %d [degree], pw = %d[ms]\n", deg, pw);
+            vTaskDelay(500);
         }
     }
 }
