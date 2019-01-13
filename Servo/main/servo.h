@@ -22,30 +22,35 @@
 
 
 /**
- * @brief   Degree to pulse width calculation
- * @param   servoPin    GPIO servo pin
+ * @brief   Initializes servo at gpio pin SERVO_PIN.
  */
-void servo_init(uint32_t servoPin);
+void servo_init();
 
 /**
- * @brief   Set servo position
- * @param   pw  Requested position in [us]
+ * @brief   Set servo position.
+ * @param   pw  Requested position in [us].
  */
 void servo_setPos_pw(uint32_t pw);
 
 /**
- * @brief   Set servo position
- * @param   deg Requested position in [degrees]
+ * @brief   Set servo position.
+ * @param   deg Requested position in [degrees].
  */
 void servo_setPos_deg(uint32_t pw);
 
 /**
- * @brief   Set ,ax servo position
+ * @brief Set servo position in percentage between min and max.
+ * @param percentage position between min and max.
+ */
+void servo_setPos_percentage(uint32_t percentage);
+
+/**
+ * @brief   Set max servo position.
  */
 void servo_setMax();
 
 /**
- * @brief   Set min servo position
+ * @brief   Set min servo position.
  */
 void servo_setMin();
 
