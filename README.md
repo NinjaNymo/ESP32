@@ -2,6 +2,8 @@
 
 This repository contains a wide variety of projects for the ESP32 using Xtensa's integrated development framework, or ESP-IDF.
 
+Some directories such as [Servo](./Servo) contains drivers, while others contain more complete application project.
+
 ### Multiprocessing on ESP32:
 
 The ESP-IDF uses a [modified version of FreeRTOS that implements symmetric multiprocessing](https://docs.espressif.com/projects/esp-idf/en/stable/api-guides/freertos-smp.html) across the ESP's two cores and is pretty much why this platform is so awesome.
